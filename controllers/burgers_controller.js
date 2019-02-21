@@ -1,27 +1,28 @@
+//require express
+
 let express = require("express");
-console.log(`in burgers controllers`);
 let router = express.Router();
 
 // Import the model (burger.js) to use its database functions.
 let burger = require("../models/burger.js");
 
-// Create all our routes and set up logic within those routes where required.
-// "/"  set up home page with header and all burgers that are not devoured
+// Create routes and set up logic within those routes where required.
+
+// "/"  set up home page with header and all burgers that are devoured and not devoured
 router.get("/", function(req, res) {
   burger.all(function(data) {
     let hbsObject = {
       burgers: data
     };
-    console.log(hbsObject);
     res.render("index", hbsObject);
   });
 });
 
 //if submit button is clicked then want to add a new burger to the database
+//new burgers have not been devoured, so set devoured to false
 //display new burgers
 
 router.post("/api/burgers", function(req, res) {
-  console.log(`add burger controllers`);
   req.body.devoured = false;
   burger.create([
     "burger_name", "devoured"
@@ -33,11 +34,11 @@ router.post("/api/burgers", function(req, res) {
   });
 });
 
+//if devoured button is clicked, the burger is being devoured
+//get id of devoured burger and set devoured to true and update burger in database
+
 router.put("/api/burgers/:id", function(req, res) {
   let condition = `id = ${req.params.id}`;
-
-  console.log("condition", condition);
-
   burger.update({
     devoured: true
   }, condition, function(result) {
