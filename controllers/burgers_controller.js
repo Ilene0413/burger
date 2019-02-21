@@ -17,24 +17,29 @@ router.get("/", function(req, res) {
   });
 });
 
+//if submit button is clicked then want to add a new burger to the database
+//display new burgers
+
 router.post("/api/burgers", function(req, res) {
+  console.log(`add burger controllers`);
+  req.body.devoured = false;
   burger.create([
-    "name", "devour"
+    "burger_name", "devoured"
   ], [
-    req.body.name, req.body.devour
+    req.body.burger_name, req.body.devoured
   ], function(result) {
     // Send back the ID of the new burger
     res.json({ id: result.insertId });
   });
 });
 
-router.put("/api/burger/:id", function(req, res) {
+router.put("/api/burgers/:id", function(req, res) {
   let condition = `id = ${req.params.id}`;
 
   console.log("condition", condition);
 
   burger.update({
-    devour: req.body.devour
+    devoured: true
   }, condition, function(result) {
     if (result.changedRows == 0) {
       // If no rows were changed, then the ID must not exist, so 404
@@ -44,6 +49,7 @@ router.put("/api/burger/:id", function(req, res) {
     }
   });
 });
+
 
 // Export routes for server.js to use.
 module.exports = router;

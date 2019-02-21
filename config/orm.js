@@ -6,7 +6,6 @@ var connection = require("../config/connection.js");
 // In order to write the query, we need 3 question marks.
 // The above helper function loops through and creates an array of question marks - ["?", "?", "?"] - and turns it into a string.
 // ["?", "?", "?"].toString() => "?,?,?";
-console.log(`in orm.js`);
 function printQuestionMarks(num) {
   var arr = [];
 
@@ -41,7 +40,7 @@ function objToSql(ob) {
 }
 
 // Object for all our SQL statement functions.
-var orm = {
+let orm = {
   all: function(tableInput, cb) {
     let queryString = `SELECT * FROM ${tableInput};`;
     connection.query(queryString, function(err, result) {
@@ -52,17 +51,7 @@ var orm = {
     });
   },
   create: function(table, cols, vals, cb) {
-    var queryString = "INSERT INTO " + table;
-
-    queryString += " (";
-    queryString += cols.toString();
-    queryString += ") ";
-    queryString += "VALUES (";
-    queryString += printQuestionMarks(vals.length);
-    queryString += ") ";
-
-    console.log(queryString);
-
+    let queryString = `INSERT INTO ${table} (${cols.toString()}) VALUES(${printQuestionMarks(vals.length)})`;
     connection.query(queryString, vals, function(err, result) {
       if (err) {
         throw err;
@@ -72,13 +61,14 @@ var orm = {
     });
   },
   // An example of objColVals would be {name: panther, sleepy: true}
-  update: function(table, objColVals, condition, cb) {
-    var queryString = "UPDATE " + table;
+  update: function(table, colVal, condition, cb) {
+    let queryString = `UPDATE ${table} SET ${objToSql(colVal)} where ${condition}`;
+ //       var queryString = "UPDATE " + table;
 
-    queryString += " SET ";
-    queryString += objToSql(objColVals);
-    queryString += " WHERE ";
-    queryString += condition;
+    // queryString += " SET ";s
+    // queryString += objToSql(objColVals);
+    // queryString += " WHERE ";
+    // queryString += condition;
 
     console.log(queryString);
     connection.query(queryString, function(err, result) {
@@ -91,5 +81,5 @@ var orm = {
   }
 };
 
-// Export the orm object for the model (cat.js).
+// Export the orm object for the model (burger.js).
 module.exports = orm;
