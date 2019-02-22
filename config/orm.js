@@ -1,13 +1,11 @@
 // Import MySQL connection.
-var connection = require("../config/connection.js");
+let connection = require("../config/connection.js");
 
 // Helper function for SQL syntax.
-// Let's say we want to pass 3 values into the mySQL query.
-// In order to write the query, we need 3 question marks.
-// The above helper function loops through and creates an array of question marks - ["?", "?", "?"] - and turns it into a string.
+// This function loops through and creates an array of question marks - ["?", "?", "?"] - and turns it into a string.
 // ["?", "?", "?"].toString() => "?,?,?";
 function printQuestionMarks(num) {
-  var arr = [];
+  let arr = [];
 
   for (var i = 0; i < num; i++) {
     arr.push("?");
@@ -18,19 +16,17 @@ function printQuestionMarks(num) {
 
 // Helper function to convert object key/value pairs to SQL syntax
 function objToSql(ob) {
-  var arr = [];
+  let arr = [];
 
   // loop through the keys and push the key/value as a string int arr
-  for (var key in ob) {
-    var value = ob[key];
+  for (let key in ob) {
+    let value = ob[key];
     // check to skip hidden properties
     if (Object.hasOwnProperty.call(ob, key)) {
-      // if string with spaces, add quotations (Lana Del Grey => 'Lana Del Grey')
+      // if string with spaces, add quotations)
       if (typeof value === "string" && value.indexOf(" ") >= 0) {
         value = "'" + value + "'";
       }
-      // e.g. {name: 'Lana Del Grey'} => ["name='Lana Del Grey'"]
-      // e.g. {sleepy: true} => ["sleepy=true"]
       arr.push(key + "=" + value);
     }
   }
@@ -39,7 +35,7 @@ function objToSql(ob) {
   return arr.toString();
 }
 
-// Object for all our SQL statement functions.
+// Object for all SQL statement functions.
 let orm = {
   all: function(tableInput, cb) {
     let queryString = `SELECT * FROM ${tableInput};`;
@@ -63,14 +59,6 @@ let orm = {
   // An example of objColVals would be {name: panther, sleepy: true}
   update: function(table, colVal, condition, cb) {
     let queryString = `UPDATE ${table} SET ${objToSql(colVal)} where ${condition}`;
- //       var queryString = "UPDATE " + table;
-
-    // queryString += " SET ";s
-    // queryString += objToSql(objColVals);
-    // queryString += " WHERE ";
-    // queryString += condition;
-
-    console.log(queryString);
     connection.query(queryString, function(err, result) {
       if (err) {
         throw err;
